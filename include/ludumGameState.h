@@ -9,14 +9,14 @@
 
 #include <iostream>
 #include <jsoncpp/json/json.h>
+#include <vector>
 #include <SDL.h>
 
 #include "gameState.h"
 #include "texture.h"
 #include "turrent.h"
+#include "normalSpaceShip.h"
 #include "window.h"
-
-using namespace std;
 
 class LudumGameState : public GameState
 {
@@ -36,10 +36,15 @@ private:
 	Turrent turrent3_;
 	Turrent turrent4_;
 
+	vector <SpaceShipBase*> spaceShipList_;
+
 	Texture backgroundPic_;
 
 	int mousePosX_;
 	int mousePosY_;
+
+	void addNewSpaceShip_();
+	bool checkCallision_(SpaceShipBase* ship, Bullet* bullet);
 };
 
 #endif /* LUDUM_GAME_STATE_H */

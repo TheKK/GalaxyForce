@@ -43,7 +43,7 @@ TurrentBullet::update()
 	posRect_.x = posX_;
 	posRect_.y = posY_;
 
-	if (SDL_HasIntersection(&posRect_, &windowRect) == SDL_TRUE)
+	if (SDL_HasIntersection(&posRect_, &windowRect) == SDL_FALSE)
 		suicide();
 }
 

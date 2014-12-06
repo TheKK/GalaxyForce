@@ -13,12 +13,21 @@
 class SpaceShipBase
 {
 public:
-	SpaceShipBase() {};
-	virtual ~SpaceShipBase() {};
+	SpaceShipBase() { std::cout << ++count_<< "\n"; };
+	virtual ~SpaceShipBase() { std::cout << --count_<< "\n"; };
 
 	virtual void eventHandler(const SDL_Event& event) = 0;
 	virtual void update() = 0;
 	virtual void render() = 0;
+
+	virtual const SDL_Rect* rect() const = 0;
+
+	void suicide();
+	bool isDead() const;
+private:
+	bool isDead_ = false;
+
+	static int count_;
 };
 
 #endif /* SPACE_SHIP_BASE_H */

@@ -169,8 +169,12 @@ SDL_Rect
 Window::rect()
 {
 	SDL_Rect rectToReturn;
-	SDL_GetWindowSize(window_, &rectToReturn.w, &rectToReturn.h);
-	SDL_GetWindowPosition(window_, &rectToReturn.x, &rectToReturn.y);
+
+	rectToReturn.x = 0;
+	rectToReturn.y = 0;
+
+	SDL_RenderGetLogicalSize(renderer_, &rectToReturn.w, &rectToReturn.h);
+
 	return rectToReturn;
 }
 

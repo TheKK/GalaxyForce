@@ -8,15 +8,21 @@
 
 Turrent::Turrent():
 	bodyPic_("game/images/turrent_body.png", Window::renderer()),
-	gunPic_("game/images/turrent_gun.png", Window::renderer())
+	gunPic_("game/images/turrent_gun.png", Window::renderer()),
+	cautionPic_("./game/images/turrent_edgeCaution.png", Window::renderer())
 {
-	posRect_.x = 0;
-	posRect_.y = 0;
-	posRect_.w = 20;
-	posRect_.h = 20;
+	bodyPosRect_.x = 0;
+	bodyPosRect_.y = 0;
+	bodyPosRect_.w = 20;
+	bodyPosRect_.h = 20;
 
-	rotateCenter_.x = posRect_.w / 2;
-	rotateCenter_.y = posRect_.h;
+	rotateCenter_.x = 0;
+	rotateCenter_.y = bodyPosRect_.h / 2;
+
+	cautionSignPosRect_.x = bodyPosRect_.x;
+	cautionSignPosRect_.y = bodyPosRect_.y - bodyPosRect_.h;
+	cautionSignPosRect_.w = 20;
+	cautionSignPosRect_.h = 20;
 
 	bulletList_.resize(0);
 }
@@ -46,17 +52,35 @@ void
 Turrent::update(int mousePosX, int mousePosY)
 {
 	double dx, dy;
-	
-	dx = mousePosX - (posRect_.x + rotateCenter_.x);
-	dy = mousePosY - (posRect_.y + rotateCenter_.y);
+	double rotateEdgeRight;
+	double rotateEdgeLeft;
+
+	dx = mousePosX - (bodyPosRect_.x + rotateCenter_.x);
+	dy = mousePosY - (bodyPosRect_.y + rotateCenter_.y);
+
+	rotateEdgeRight = bodyRotateDegree_ + maxRotatedegree_;
+	rotateEdgeLeft = bodyRotateDegree_ - maxRotatedegree_;
+	normalizeDegree_(&rotateEdgeRight);
+	normalizeDegree_(&rotateEdgeLeft);
 
 	gunRotateDegree_ =
-		(double) (180.0 / 3.14) * std::atan(dy / dx);
+		(double) (180.0 / 3.14) * std::atan2(dy,  dx);
 
-	if (dx < 0)
-		gunRotateDegree_ += 180;
+	normalizeDegree_(&gunRotateDegree_);
 
-	gunPic_.rotateTo(gunRotateDegree_ + 90);
+	if (gunRotateDegree_ > rotateEdgeRight) {
+		gunRotateDegree_ = rotateEdgeRight;
+		isOnEdge_ = true;
+	} else if (gunRotateDegree_ <  rotateEdgeLeft) {
+		gunRotateDegree_ = rotateEdgeLeft;
+		isOnEdge_ = true;
+	} else {
+		isOnEdge_ = false;
+	}
+
+	normalizeDegree_(&gunRotateDegree_);
+
+	gunPic_.rotateTo(gunRotateDegree_);
 
 	updateBullets_();
 }
@@ -66,41 +90,65 @@ Turrent::render()
 {
 	renderBullets_();
 
-	gunPic_.renderEx(posRect_, &rotateCenter_);
-	bodyPic_.renderEx(posRect_, &rotateCenter_);
+	gunPic_.renderEx(bodyPosRect_, &rotateCenter_);
+	bodyPic_.renderEx(bodyPosRect_, &rotateCenter_);
+
+	if (isOnEdge_ && ++cautionBlinkDelay_ == 5) {
+		cautionPic_.render(bodyPosRect_);
+		cautionBlinkDelay_ = 0;
+	}
 }
 
 void
 Turrent::setPos(int x, int y)
 {
-	posRect_.x = x;
-	posRect_.y = y;
+	bodyPosRect_.x = x;
+	bodyPosRect_.y = y;
+
+	cautionSignPosRect_.x = bodyPosRect_.x;
+	cautionSignPosRect_.y = bodyPosRect_.y;
 }
 
 void
 Turrent::setRotateDegree(double degree)
 {
-	bodyPic_.rotateTo(degree);
+	bodyRotateDegree_ = degree;
+	normalizeDegree_(&bodyRotateDegree_);
 
-	gunRotateDegree_ = degree;
+	bodyPic_.rotateTo(bodyRotateDegree_);
 }
 
 void
 Turrent::shootBullet()
 {
 	Bullet* bullet = new TurrentBullet(
-		posRect_.x + rotateCenter_.x, posRect_.y + rotateCenter_.y,
+		bodyPosRect_.x + rotateCenter_.x, bodyPosRect_.y + rotateCenter_.y,
 		gunRotateDegree_
 		);
 
 	bulletList_.push_back(bullet);
 }
 
+const vector<Bullet*>&
+Turrent::bulletList() const
+{
+	return bulletList_;
+}
+
 void
 Turrent::updateBullets_()
 {
-	for (auto e : bulletList_)
-		e->update();
+	for (auto bullet = bulletList_.rbegin();
+	     bullet != bulletList_.rend();
+	     bullet++) {
+
+		(*bullet)->update();
+
+		if ((*bullet)->isDead()) {
+			delete (*bullet);
+			bulletList_.erase(next(bullet).base());
+		}
+	}
 }
 
 void
@@ -108,4 +156,15 @@ Turrent::renderBullets_()
 {
 	for (auto e : bulletList_)
 		e->render();
+}
+
+void
+Turrent::normalizeDegree_(double* n)
+{
+	/* Make sure n is positive */
+	while (*n < 0)
+		*n += 360;
+
+	while (*n > 360)
+		*n -= 360;
 }
