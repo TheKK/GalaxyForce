@@ -17,38 +17,87 @@ Turrent::Turrent():
 
 	rotateCenter_.x = posRect_.w / 2;
 	rotateCenter_.y = posRect_.h;
+
+	bulletList_.resize(0);
 }
 
 Turrent::~Turrent()
 {
+	for (auto e : bulletList_) {
+		delete e;
+		e = nullptr;
+	}
+
+	bulletList_.clear();
 }
 
 void
 Turrent::eventHandler(const SDL_Event& event)
 {
+	switch (event.type) {
+	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == SDL_BUTTON_LEFT)
+			shootBullet();
+		break;
+	}
 }
 
 void
 Turrent::update(int mousePosX, int mousePosY)
 {
 	double dx, dy;
-	double GunRotateDegree;
 	
 	dx = mousePosX - (posRect_.x + rotateCenter_.x);
 	dy = mousePosY - (posRect_.y + rotateCenter_.y);
 
-	GunRotateDegree =
-		(90.0 + (double) (180.0 / 3.14) * std::atan(dy / dx));
+	gunRotateDegree_ =
+		(double) (180.0 / 3.14) * std::atan(dy / dx);
 
 	if (dx < 0)
-		GunRotateDegree += 180;
+		gunRotateDegree_ += 180;
 
-	gunPic_.rotateTo(GunRotateDegree);
+	gunPic_.rotateTo(gunRotateDegree_ + 90);
+
+	updateBullets_();
 }
 
 void
 Turrent::render()
 {
+	renderBullets_();
+
 	gunPic_.renderEx(posRect_, &rotateCenter_);
 	bodyPic_.renderEx(posRect_, &rotateCenter_);
+}
+
+void
+Turrent::setTurrentCenter(int x, int y)
+{
+	posRect_.x = x;
+	posRect_.y = y;
+}
+
+void
+Turrent::shootBullet()
+{
+	Bullet* bullet = new TurrentBullet(
+		posRect_.x + rotateCenter_.x, posRect_.y + rotateCenter_.y,
+		gunRotateDegree_
+		);
+
+	bulletList_.push_back(bullet);
+}
+
+void
+Turrent::updateBullets_()
+{
+	for (auto e : bulletList_)
+		e->update();
+}
+
+void
+Turrent::renderBullets_()
+{
+	for (auto e : bulletList_)
+		e->render();
 }

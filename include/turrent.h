@@ -8,11 +8,12 @@
 #define TURRENT_H
 
 #include <SDL.h>
+#include <vector>
 #include <cmath>
 
 #include "window.h"
 #include "texture.h"
-#include "bullet.h"
+#include "turrentBullet.h"
 
 class Turrent
 {
@@ -26,12 +27,21 @@ public:
 
 	void setTurrentCenter(int x, int y);
 	void setRotateDegree(int n);
+
+	void shootBullet();
 private:
 	Texture bodyPic_;
 	Texture gunPic_;
 
+	std::vector<Bullet*> bulletList_;
+
 	SDL_Rect posRect_ = {0};
 	SDL_Point rotateCenter_ = {0};
+
+	double gunRotateDegree_;
+
+	void updateBullets_();
+	void renderBullets_();
 };
 
 #endif /* TURRENT_H */

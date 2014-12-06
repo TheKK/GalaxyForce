@@ -6,7 +6,8 @@
 
 #include "ludumGameState.h"
 
-LudumGameState::LudumGameState()
+LudumGameState::LudumGameState():
+	backgroundPic_("./game/images/backbround.png", Window::renderer())
 {
 	Json::Value root;
 	Json::Reader reader;
@@ -34,6 +35,8 @@ LudumGameState::eventHandler(const SDL_Event& event)
 		mousePosY_ = event.motion.y;
 		break;
 	}
+
+	turrent1_.eventHandler(event);
 }
 
 void
@@ -45,5 +48,7 @@ LudumGameState::update()
 void
 LudumGameState::render()
 {
+	backgroundPic_.renderFullWindow();
+
 	turrent1_.render();
 }

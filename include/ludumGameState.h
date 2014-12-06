@@ -29,6 +29,7 @@ public:
 	void render();
 private:
 	Turrent turrent1_;
+	Texture backgroundPic_;
 
 	int mousePosX_;
 	int mousePosY_;

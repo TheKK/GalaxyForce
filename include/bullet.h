@@ -10,8 +10,6 @@
 #include <iostream>
 #include <SDL.h>
 
-#include "gameActor.h"
-
 using namespace std;
 
 class GameActor;
@@ -21,7 +19,7 @@ class Bullet
 public:
 	virtual ~Bullet() {};
 
-	virtual void update(GameActor& target) = 0;
+	virtual void update() = 0;
 	virtual void render() = 0;
 
 	int16_t damage() const;

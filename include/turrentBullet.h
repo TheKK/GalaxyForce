@@ -7,16 +7,32 @@
 #ifndef TURRENT_BULLET_CPP
 #define TURRENT_BULLET_CPP
 
+#include <iostream>
+#include <cmath>
 #include <SDL.h>
 
+#include "window.h"
 #include "bullet.h"
+#include "texture.h"
 
 class TurrentBullet : public Bullet
 {
 public:
-	TurrentBullet();
+	TurrentBullet(int startX, int startY, double degree);
 	~TurrentBullet();
+
+	void update();
+	void render();
+
 private:
+	Texture bulletPic_;
+
+	const double moveSpeed_ = 3.0f;
+
+	double vX_, vY_;
+	double posX_, posY_;
+
+	SDL_Rect posRect_;
 };
 
 #endif /* TURRENT_BULLET_CPP */
