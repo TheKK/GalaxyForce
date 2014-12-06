@@ -28,7 +28,14 @@ public:
 	void update();
 	void render();
 private:
+	Turrent* turrentList_[5];
+
+	Turrent turrent0_;
 	Turrent turrent1_;
+	Turrent turrent2_;
+	Turrent turrent3_;
+	Turrent turrent4_;
+
 	Texture backgroundPic_;
 
 	int mousePosX_;

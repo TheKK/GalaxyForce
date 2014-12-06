@@ -25,8 +25,8 @@ public:
 	void update(int mousePosX, int mousePosY);
 	void render();
 
-	void setTurrentCenter(int x, int y);
-	void setRotateDegree(int n);
+	void setPos(int x, int y);
+	void setRotateDegree(double degree);
 
 	void shootBullet();
 private:

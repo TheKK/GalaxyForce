@@ -12,14 +12,20 @@ TurrentBullet::TurrentBullet(int startX, int startY, double degree):
 	posRect_.w = 4;
 	posRect_.h = 4;
 
+	vX_ = moveSpeed_ * std::cos(degree * (3.14 / 180.0));
+	vY_ = moveSpeed_ * std::sin(degree * (3.14 / 180.0));
+
 	posRect_.x = startX - (posRect_.w / 2);
 	posRect_.y = startY - (posRect_.h / 2);
 
-	posX_ = startX;
-	posY_ = startY;
+	posX_ = posRect_.x;
+	posY_ = posRect_.y;
 
-	vX_ = moveSpeed_ * std::cos(degree * (3.14 / 180.0));
-	vY_ = moveSpeed_ * std::sin(degree * (3.14 / 180.0));
+	update();
+	update();
+	update();
+	update();
+	update();
 }
 
 TurrentBullet::~TurrentBullet()

@@ -10,8 +10,8 @@ Turrent::Turrent():
 	bodyPic_("game/images/turrent_body.png", Window::renderer()),
 	gunPic_("game/images/turrent_gun.png", Window::renderer())
 {
-	posRect_.x = 30;
-	posRect_.y = 30;
+	posRect_.x = 0;
+	posRect_.y = 0;
 	posRect_.w = 20;
 	posRect_.h = 20;
 
@@ -71,10 +71,18 @@ Turrent::render()
 }
 
 void
-Turrent::setTurrentCenter(int x, int y)
+Turrent::setPos(int x, int y)
 {
 	posRect_.x = x;
 	posRect_.y = y;
+}
+
+void
+Turrent::setRotateDegree(double degree)
+{
+	bodyPic_.rotateTo(degree);
+
+	gunRotateDegree_ = degree;
 }
 
 void
