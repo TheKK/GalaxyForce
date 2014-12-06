@@ -12,6 +12,7 @@
 
 #include "gameState.h"
 #include "texture.h"
+#include "turrent.h"
 #include "window.h"
 
 using namespace std;
@@ -26,6 +27,10 @@ public:
 	void update();
 	void render();
 private:
+	Turrent turrent1_;
+
+	int mousePosX_;
+	int mousePosY_;
 };
 
 #endif /* LUDUM_GAME_STATE_H */

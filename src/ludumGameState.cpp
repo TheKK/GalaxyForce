@@ -27,15 +27,21 @@ LudumGameState::eventHandler(const SDL_Event& event)
 				<< event.button.y << endl;
 		}
 		break;
+	case SDL_MOUSEMOTION:
+		mousePosX_ = event.motion.x;
+		mousePosY_ = event.motion.y;
+		break;
 	}
 }
 
 void
 LudumGameState::update()
 {
+	turrent1_.update(mousePosX_, mousePosY_);
 }
 
 void
 LudumGameState::render()
 {
+	turrent1_.render();
 }

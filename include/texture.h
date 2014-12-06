@@ -35,6 +35,9 @@ public:
 	void setBlendMode(SDL_BlendMode mode);
 
 	void render(const SDL_Rect& rect);
+
+	/* Update this to class Renderable if you have free time */
+	void renderEx(const SDL_Rect& rect, SDL_Point* rotateCenter = nullptr);
 	void renderFullWindow();
 private:
 	SDL_Texture* texture_ = nullptr;

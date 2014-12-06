@@ -84,7 +84,7 @@ InitSystem()
 	}
 
 	/* Window setup */
-	Window::init("BTW-test", 640, 360);
+	Window::init("Galaxy Force", 640, 360);
 
 	/* Register user events */
 	UserEvent::Init();

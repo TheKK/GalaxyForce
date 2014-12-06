@@ -71,6 +71,16 @@ Texture::render(const SDL_Rect& rect)
 }
 
 void
+Texture::renderEx(const SDL_Rect& rect, SDL_Point* rotateCenter)
+{
+	if (!visable_)
+		return;
+
+	SDL_RenderCopyEx(targetRenderer_, texture_, nullptr, &rect,
+			 degree_, rotateCenter, SDL_FLIP_NONE);
+}
+
+void
 Texture::renderFullWindow()
 {
 	if (!visable_)
