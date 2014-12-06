@@ -37,6 +37,7 @@ private:
 	Turrent turrent4_;
 
 	vector <SpaceShipBase*> spaceShipList_;
+	vector <Bullet*> bulletList_;
 
 	Texture backgroundPic_;
 
@@ -44,7 +45,11 @@ private:
 	int mousePosY_;
 
 	void addNewSpaceShip_();
+	void updateSpaceShips_();
+
 	bool checkCallision_(SpaceShipBase* ship, Bullet* bullet);
+
+	void updaetBullets_();
 };
 
 #endif /* LUDUM_GAME_STATE_H */

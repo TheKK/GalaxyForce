@@ -24,8 +24,8 @@ Bullet::isDead()
 	return isDead_;
 }
 
-SDL_Rect*
-Bullet::rect()
+const SDL_Rect*
+Bullet::rect() const
 {
 	return &posRect_;
 }

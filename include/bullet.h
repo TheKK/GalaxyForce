@@ -27,7 +27,7 @@ public:
 	void suicide();
 	bool isDead();
 
-	SDL_Rect* rect();
+	const SDL_Rect* rect() const;
 protected:
 	bool isDead_ = false;
 	int16_t damage_;

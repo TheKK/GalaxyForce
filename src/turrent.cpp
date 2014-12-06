@@ -23,18 +23,10 @@ Turrent::Turrent():
 	cautionSignPosRect_.y = bodyPosRect_.y - bodyPosRect_.h;
 	cautionSignPosRect_.w = 20;
 	cautionSignPosRect_.h = 20;
-
-	bulletList_.resize(0);
 }
 
 Turrent::~Turrent()
 {
-	for (auto e : bulletList_) {
-		delete e;
-		e = nullptr;
-	}
-
-	bulletList_.clear();
 }
 
 void
@@ -43,13 +35,13 @@ Turrent::eventHandler(const SDL_Event& event)
 	switch (event.type) {
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == SDL_BUTTON_LEFT)
-			shootBullet();
+			readyToShootBullet = true;
 		break;
 	}
 }
 
 void
-Turrent::update(int mousePosX, int mousePosY)
+Turrent::update(int mousePosX, int mousePosY, vector<Bullet*>* bulletList_)
 {
 	double dx, dy;
 	double rotateEdgeRight;
@@ -82,21 +74,20 @@ Turrent::update(int mousePosX, int mousePosY)
 
 	gunPic_.rotateTo(gunRotateDegree_);
 
-	updateBullets_();
+	if (readyToShootBullet) {
+		shootBullet_(bulletList_);
+		readyToShootBullet = false;
+	}
 }
 
 void
 Turrent::render()
 {
-	renderBullets_();
-
 	gunPic_.renderEx(bodyPosRect_, &rotateCenter_);
 	bodyPic_.renderEx(bodyPosRect_, &rotateCenter_);
 
-	if (isOnEdge_ && ++cautionBlinkDelay_ == 5) {
+	if (isOnEdge_)
 		cautionPic_.render(bodyPosRect_);
-		cautionBlinkDelay_ = 0;
-	}
 }
 
 void
@@ -119,46 +110,6 @@ Turrent::setRotateDegree(double degree)
 }
 
 void
-Turrent::shootBullet()
-{
-	Bullet* bullet = new TurrentBullet(
-		bodyPosRect_.x + rotateCenter_.x, bodyPosRect_.y + rotateCenter_.y,
-		gunRotateDegree_
-		);
-
-	bulletList_.push_back(bullet);
-}
-
-const vector<Bullet*>&
-Turrent::bulletList() const
-{
-	return bulletList_;
-}
-
-void
-Turrent::updateBullets_()
-{
-	for (auto bullet = bulletList_.rbegin();
-	     bullet != bulletList_.rend();
-	     bullet++) {
-
-		(*bullet)->update();
-
-		if ((*bullet)->isDead()) {
-			delete (*bullet);
-			bulletList_.erase(next(bullet).base());
-		}
-	}
-}
-
-void
-Turrent::renderBullets_()
-{
-	for (auto e : bulletList_)
-		e->render();
-}
-
-void
 Turrent::normalizeDegree_(double* n)
 {
 	/* Make sure n is positive */
@@ -167,4 +118,15 @@ Turrent::normalizeDegree_(double* n)
 
 	while (*n > 360)
 		*n -= 360;
+}
+
+void
+Turrent::shootBullet_(vector<Bullet*>* bulletList)
+{
+	Bullet* bullet = new TurrentBullet(
+		bodyPosRect_.x + rotateCenter_.x, bodyPosRect_.y + rotateCenter_.y,
+		gunRotateDegree_
+		);
+
+	bulletList->push_back(bullet);
 }

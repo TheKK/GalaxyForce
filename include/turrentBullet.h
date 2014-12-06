@@ -31,8 +31,6 @@ private:
 
 	double vX_, vY_;
 	double posX_, posY_;
-
-	SDL_Rect posRect_;
 };
 
 #endif /* TURRENT_BULLET_CPP */
