@@ -27,7 +27,8 @@ public:
 	void load(const char* filePath, SDL_Renderer* renderer,
 		  Uint8 r = 0, Uint8 g = 255, Uint8 b = 255);
 
-	void rotate(double value);
+	void rotateBy(double value);
+	void rotateTo(double value);
 
 	void setAlpha(Uint8 value);
 	SDL_Texture* object() const;

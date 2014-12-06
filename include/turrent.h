@@ -7,13 +7,12 @@
 #ifndef TURRENT_H
 #define TURRENT_H
 
-#include <iostream>
 #include <SDL.h>
+#include <cmath>
 
 #include "window.h"
 #include "texture.h"
-
-using namespace std;
+#include "bullet.h"
 
 class Turrent
 {
@@ -21,19 +20,18 @@ public:
 	Turrent();
 	~Turrent();
 
-	void eventHandler(SDL_Event& event);
+	void eventHandler(const SDL_Event& event);
 	void update(int mousePosX, int mousePosY);
 	void render();
 
 	void setTurrentCenter(int x, int y);
 	void setRotateDegree(int n);
 private:
-	Texture bodyPic;
-	Texture gunPic;
+	Texture bodyPic_;
+	Texture gunPic_;
 
-	SDL_Rect posRect = {0};
-	SDL_Point posCenter = {0};
-	int rotateDegree = 0;
+	SDL_Rect posRect_ = {0};
+	SDL_Point rotateCenter_ = {0};
 };
 
 #endif /* TURRENT_H */

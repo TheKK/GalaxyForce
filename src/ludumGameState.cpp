@@ -8,6 +8,8 @@
 
 LudumGameState::LudumGameState()
 {
+	Json::Value root;
+	Json::Reader reader;
 }
 
 LudumGameState::~LudumGameState()

@@ -30,13 +30,19 @@ Texture::load(const char* filePath, SDL_Renderer* renderer,
 }
 
 void
-Texture::rotate(double value)
+Texture::rotateBy(double value)
 {
 	degree_ += value;
 	if (degree_ > 360.0)
 		degree_ -= 360.0;
 	else if (degree_ < 0)
 		degree_ = 360 - degree_;
+}
+
+void
+Texture::rotateTo(double value)
+{
+	degree_ = value;
 }
 
 void

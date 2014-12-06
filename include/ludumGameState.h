@@ -8,6 +8,7 @@
 #define LUDUM_GAME_STATE_H
 
 #include <iostream>
+#include <jsoncpp/json/json.h>
 #include <SDL.h>
 
 #include "gameState.h"

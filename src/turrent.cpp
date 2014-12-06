@@ -7,13 +7,16 @@
 #include "turrent.h"
 
 Turrent::Turrent():
-	bodyPic("game/images/turrent_body.png", Window::renderer()),
-	gunPic("game/images/turrent_gun.png", Window::renderer())
+	bodyPic_("game/images/turrent_body.png", Window::renderer()),
+	gunPic_("game/images/turrent_gun.png", Window::renderer())
 {
-	posRect.x = 30;
-	posRect.y = 30;
-	posRect.w = 20;
-	posRect.h = 20;
+	posRect_.x = 30;
+	posRect_.y = 30;
+	posRect_.w = 20;
+	posRect_.h = 20;
+
+	rotateCenter_.x = posRect_.w / 2;
+	rotateCenter_.y = posRect_.h;
 }
 
 Turrent::~Turrent()
@@ -21,29 +24,31 @@ Turrent::~Turrent()
 }
 
 void
-Turrent::eventHandler(SDL_Event& event)
+Turrent::eventHandler(const SDL_Event& event)
 {
 }
 
 void
 Turrent::update(int mousePosX, int mousePosY)
 {
-	static int delay = 0;
+	double dx, dy;
+	double GunRotateDegree;
+	
+	dx = mousePosX - (posRect_.x + rotateCenter_.x);
+	dy = mousePosY - (posRect_.y + rotateCenter_.y);
 
-	if (++delay == 5) {
-		gunPic.rotate(10);
-		bodyPic.rotate(10);
-		delay = 0;
-	}
+	GunRotateDegree =
+		(90.0 + (double) (180.0 / 3.14) * std::atan(dy / dx));
+
+	if (dx < 0)
+		GunRotateDegree += 180;
+
+	gunPic_.rotateTo(GunRotateDegree);
 }
 
 void
 Turrent::render()
 {
-	SDL_Point p;
-	p.x = posRect.w / 2;
-	p.y = posRect.h;
-
-	gunPic.renderEx(posRect, &p);
-	bodyPic.renderEx(posRect, &p);
+	gunPic_.renderEx(posRect_, &rotateCenter_);
+	bodyPic_.renderEx(posRect_, &rotateCenter_);
 }
