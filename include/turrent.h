@@ -14,6 +14,14 @@
 #include "window.h"
 #include "texture.h"
 #include "turrentBullet.h"
+#include "turrentLaser.h"
+#include "sound.h"
+
+enum BulletType {
+	BULLET_NORMAL = 0x00,
+	BULLET_LASER,
+	BULLET_RAPID
+};
 
 class Turrent
 {
@@ -27,14 +35,17 @@ public:
 
 	void setPos(int x, int y);
 	void setRotateDegree(double degree);
-
 private:
 	Texture bodyPic_;
 	Texture gunPic_;
 	Texture cautionPic_;
 
+	static Sound shootSound_;
+
+	enum BulletType bulletType_ = BULLET_LASER;
+
 	bool isOnEdge_ = false;
-	bool readyToShootBullet = false;
+	bool readyToShootBullet_ = false;
 
 	SDL_Rect bodyPosRect_ = {0};
 	SDL_Rect cautionSignPosRect_ = {0};
@@ -43,6 +54,8 @@ private:
 	const double maxRotatedegree_ = 50;
 	double gunRotateDegree_ = 0;
 	double bodyRotateDegree_ = 0;
+
+	int reloadDelay_ = 0;
 
 	void normalizeDegree_(double* n);
 	void shootBullet_(vector<Bullet*>* bulletList_);

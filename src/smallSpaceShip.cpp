@@ -1,44 +1,44 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: nromalSpaceShip.cpp
+ * File: smallSpaceShip.cpp
  */
 
-#include "normalSpaceShip.h"
+#include "smallSpaceShip.h"
 
-Sound NormalSpaceShip::boomSound_;
+Sound SmallSpaceShip::boomSound_;
 
-NormalSpaceShip::NormalSpaceShip(int startX, int startY):
-	shipSprite_("./game/images/normalSpaceShip.png", Window::renderer(),
-		    40, 20),
-	boomSprite_("./game/images/normalSpaceShip_explode.png",
+SmallSpaceShip::SmallSpaceShip(int startX, int startY):
+	shipSprite_("./game/images/smallSpaceship.png", Window::renderer(),
+		    20, 20),
+	boomSprite_("./game/images/smallSpaceship_explode.png",
 		    Window::renderer(),
-		    40, 20)
+		    20, 20)
 {
 	posRect_.x = startX;
 	posRect_.y = startY;
-	posRect_.w = 40;
+	posRect_.w = 20;
 	posRect_.h = 20;
 
 	if (!boomSound_.hasLoaded())
 		boomSound_.LoadSoundFile(
-			"./game/sounds/normalSpaceShipBoom.ogg");
+			"./game/sounds/smallSpaceShipBoom.ogg");
 
 	source_ = boomSound_.requestSource();
 }
 
-NormalSpaceShip::~NormalSpaceShip()
+SmallSpaceShip::~SmallSpaceShip()
 {
 	alDeleteSources(1, &source_);
 }
 
 void
-NormalSpaceShip::eventHandler(const SDL_Event& event)
+SmallSpaceShip::eventHandler(const SDL_Event& event)
 {
 }
 
 void
-NormalSpaceShip::update()
+SmallSpaceShip::update()
 {
 	if (isHit()) {
 		if (!Sound::isPlaying(source_))
@@ -56,14 +56,14 @@ NormalSpaceShip::update()
 		}
 
 		if (moveDelay_++ == 1) {
-			posRect_.x += 3;
+			posRect_.x += 5;
 			moveDelay_ = 0;
 		}
 	}
 }
 
 void
-NormalSpaceShip::render()
+SmallSpaceShip::render()
 {
 	if (isHit()) {
 		boomSprite_.render(posRect_);
@@ -73,7 +73,7 @@ NormalSpaceShip::render()
 }
 
 const SDL_Rect*
-NormalSpaceShip::rect() const
+SmallSpaceShip::rect() const
 {
 	return &posRect_;
 }

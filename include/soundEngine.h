@@ -9,7 +9,7 @@
 
 #include <iostream>
 #include <stdexcept>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <AL/al.h>
 #include <AL/alure.h>
 

@@ -84,12 +84,16 @@ Sprite::setFlip(enum FlipDirection dir)
 	}
 }
 
-void
+int
 Sprite::nextFrame()
 {
 	currentFrame_++;
-	if (currentFrame_ == totalFrame_)
+	if (currentFrame_ == totalFrame_) {
 		currentFrame_ = 0;
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 void

@@ -43,7 +43,7 @@ public:
 	void setFlip(enum FlipDirection dir);
 
 	/* Frame control */
-	void nextFrame();
+	int nextFrame();
 	void prevFrame();
 	void jumpTo(Uint16 where);
 private:

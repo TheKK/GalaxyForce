@@ -16,7 +16,17 @@
 #include "texture.h"
 #include "turrent.h"
 #include "normalSpaceShip.h"
+#include "smallSpaceShip.h"
+#include "hpBar.h"
+#include "sound.h"
 #include "window.h"
+#include "title.h"
+
+enum GameStage {
+	GAME_TITLE = 0x00,
+	GAME_MAIN,
+	GAME_OVER
+};
 
 class LudumGameState : public GameState
 {
@@ -28,6 +38,8 @@ public:
 	void update();
 	void render();
 private:
+	enum GameStage gameStage_ = GAME_TITLE;
+
 	Turrent* turrentList_[5];
 
 	Turrent turrent0_;
@@ -39,6 +51,12 @@ private:
 	vector <SpaceShipBase*> spaceShipList_;
 	vector <Bullet*> bulletList_;
 
+	HPBar hpBar_;
+
+	Sound loseLiftSound_;
+
+	Title title_;
+
 	Texture backgroundPic_;
 
 	int mousePosX_;
@@ -47,9 +65,9 @@ private:
 	void addNewSpaceShip_();
 	void updateSpaceShips_();
 
-	bool checkCallision_(SpaceShipBase* ship, Bullet* bullet);
-
 	void updaetBullets_();
+
+	bool checkCallision_(SpaceShipBase* ship, Bullet* bullet);
 };
 
 #endif /* LUDUM_GAME_STATE_H */

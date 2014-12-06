@@ -40,7 +40,7 @@ public:
 	static int posY();
 	static int width();
 	static int height();
-	static SDL_Rect rect();
+	static const SDL_Rect* rect();
 
 	static bool isWindowed();
 	static bool isFocused();
@@ -52,6 +52,8 @@ private:
 	Window() {};
 	static SDL_Window* window_;
 	static string title_;
+
+	static SDL_Rect rect_;
 
 	static SDL_Renderer* renderer_;
 	static SDL_Color clearColor_;

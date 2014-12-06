@@ -6,6 +6,10 @@
 
 #include "sound.h"
 
+Sound::Sound()
+{
+}
+
 Sound::Sound(string filePath)
 {
 	LoadSoundFile(filePath);
@@ -19,6 +23,9 @@ Sound::~Sound()
 void
 Sound::LoadSoundFile(string filePath)
 {
+	string fullPath = SDL_GetBasePath();
+	fullPath += filePath;
+
 	/* Gen buffer */
 	alGenBuffers(1, &buffer_);
 
@@ -26,10 +33,10 @@ Sound::LoadSoundFile(string filePath)
 	alGenSources(1, &source_);
 
 	/* Load audio file */
-	buffer_ = alureCreateBufferFromFile(filePath.c_str());
+	buffer_ = alureCreateBufferFromFile(fullPath.c_str());
 	if (buffer_ == AL_NONE) {
 		string msg("OpenAL error: file not found, ");
-		msg += filePath;
+		msg += fullPath;
 		throw runtime_error(msg);
 	}
 
@@ -78,10 +85,42 @@ Sound::Resume()
 }
 
 bool
+Sound::hasLoaded()
+{
+	if (source_)
+		return 1;
+	else
+		return 0;
+}
+
+ALuint
+Sound::requestSource()
+{
+	ALuint source;
+
+	alGenSources(1, &source);
+	alSourcei(source, AL_BUFFER, buffer_);
+	if (alGetError() != AL_NO_ERROR) {
+		fprintf(stderr, "AL error: %s", alureGetErrorString());
+		return 0;
+	} else
+		return source;
+}
+
+bool
 Sound::IsPlaying() const
 {
 	ALint state;
 	alGetSourcei(source_, AL_SOURCE_STATE, &state);
+
+	return (state == AL_PLAYING);
+}
+
+bool
+Sound::isPlaying(ALuint source)
+{
+	ALint state;
+	alGetSourcei(source, AL_SOURCE_STATE, &state);
 
 	return (state == AL_PLAYING);
 }

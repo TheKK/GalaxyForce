@@ -19,6 +19,7 @@ using namespace std;
 class Sound
 {
 	public:
+		Sound();
 		Sound(string filePath);
 		~Sound();
 
@@ -34,10 +35,16 @@ class Sound
 		void Pause();
 		void Resume();
 
+		bool hasLoaded();
+		ALuint requestSource();
+
 		/* State */
 		bool IsPlaying() const;
 		bool IsPaused() const;
 		bool IsStopped() const;
+
+		static bool isPlaying(ALuint source);
+
 	private:
 		ALuint source_;
 		ALuint buffer_;

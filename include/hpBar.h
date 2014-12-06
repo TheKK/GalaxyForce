@@ -11,7 +11,6 @@
 
 #include "texture.h"
 #include "window.h"
-#include "gameActor.h"
 
 class HPBar
 {
@@ -22,12 +21,19 @@ public:
 	void update();
 	void render();
 
-	void bindGameActor(const GameActor& actor);
+	void removeLife();
+	void addLife();
+
+	void resetLife();
 private:
 	Texture hpBar_;
+	Texture life0_;
+	Texture life1_;
+	Texture life2_;
+
 	SDL_Rect posRect_ = {0};
 
-	const GameActor* actor_;
+	int hp_ = 3;
 };
 
 #endif /* HP_BAR_H */

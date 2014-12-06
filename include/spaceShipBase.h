@@ -10,10 +10,12 @@
 #include <iostream>
 #include <SDL.h>
 
+#include "sound.h"
+
 class SpaceShipBase
 {
 public:
-	SpaceShipBase() { std::cout << ++count_<< "\n"; };
+	SpaceShipBase()	{ std::cout << ++count_<< "\n";	};
 	virtual ~SpaceShipBase() { std::cout << --count_<< "\n"; };
 
 	virtual void eventHandler(const SDL_Event& event) = 0;
@@ -22,9 +24,13 @@ public:
 
 	virtual const SDL_Rect* rect() const = 0;
 
+	void gotHit();
+	bool isHit() const;
+
 	void suicide();
 	bool isDead() const;
 private:
+	bool isHitten_ = false;
 	bool isDead_ = false;
 
 	static int count_;

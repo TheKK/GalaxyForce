@@ -1,22 +1,22 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: nromalSpaceShip.h
+ * File: smallSpaceShip.h
  */
 
-#ifndef NORMAL_SPACE_SHIP_H
-#define NORMAL_SPACE_SHIP_H
+#ifndef SMALL_SPACE_SHIP_H
+#define SMALL_SPACE_SHIP_H
 
 #include "window.h"
 #include "spaceShipBase.h"
 #include "sprite.h"
 #include "sound.h"
 
-class NormalSpaceShip : public SpaceShipBase
+class SmallSpaceShip : public SpaceShipBase
 {
 public:
-	NormalSpaceShip(int startX, int startY);
-	~NormalSpaceShip();
+	SmallSpaceShip(int startX, int startY);
+	~SmallSpaceShip();
 
 	void eventHandler(const SDL_Event& event);
 	void update();
@@ -37,4 +37,4 @@ private:
 	int boomSpriteDelay_ = 0;
 };
 
-#endif /* NORMAL_SPACE_SHIP_H */
+#endif /* SMALL_SPACE_SHIP_H */

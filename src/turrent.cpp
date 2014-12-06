@@ -6,6 +6,8 @@
 
 #include "turrent.h"
 
+Sound Turrent::shootSound_;
+
 Turrent::Turrent():
 	bodyPic_("game/images/turrent_body.png", Window::renderer()),
 	gunPic_("game/images/turrent_gun.png", Window::renderer()),
@@ -23,6 +25,9 @@ Turrent::Turrent():
 	cautionSignPosRect_.y = bodyPosRect_.y - bodyPosRect_.h;
 	cautionSignPosRect_.w = 20;
 	cautionSignPosRect_.h = 20;
+
+	if (!shootSound_.hasLoaded())
+		shootSound_.LoadSoundFile("./game/sounds/shoot.ogg");
 }
 
 Turrent::~Turrent()
@@ -34,8 +39,10 @@ Turrent::eventHandler(const SDL_Event& event)
 {
 	switch (event.type) {
 	case SDL_MOUSEBUTTONDOWN:
-		if (event.button.button == SDL_BUTTON_LEFT)
-			readyToShootBullet = true;
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			if (reloadDelay_ == 0)
+				readyToShootBullet_ = true;
+		}
 		break;
 	}
 }
@@ -74,9 +81,13 @@ Turrent::update(int mousePosX, int mousePosY, vector<Bullet*>* bulletList_)
 
 	gunPic_.rotateTo(gunRotateDegree_);
 
-	if (readyToShootBullet) {
+	if (reloadDelay_ > 0)
+		reloadDelay_--;
+
+	if (readyToShootBullet_) {
 		shootBullet_(bulletList_);
-		readyToShootBullet = false;
+		readyToShootBullet_ = false;
+		reloadDelay_ = 50;
 	}
 }
 
@@ -123,10 +134,33 @@ Turrent::normalizeDegree_(double* n)
 void
 Turrent::shootBullet_(vector<Bullet*>* bulletList)
 {
-	Bullet* bullet = new TurrentBullet(
-		bodyPosRect_.x + rotateCenter_.x, bodyPosRect_.y + rotateCenter_.y,
-		gunRotateDegree_
-		);
+	Bullet* bullet;
 
-	bulletList->push_back(bullet);
+	switch (bulletType_) {
+	case BULLET_NORMAL:
+		bullet = new TurrentBullet(
+			bodyPosRect_.x + rotateCenter_.x,
+			bodyPosRect_.y + rotateCenter_.y,
+			gunRotateDegree_);
+		bulletList->push_back(bullet);
+		break;
+	case BULLET_LASER:
+		bullet = new TurrentLaser(
+			bodyPosRect_.x + rotateCenter_.x,
+			bodyPosRect_.y + rotateCenter_.y,
+			gunRotateDegree_);
+		bulletList->push_back(bullet);
+		break;
+	case BULLET_RAPID:
+		for (int i = 0; i < 5; i ++) {
+			bullet = new TurrentBullet(
+				bodyPosRect_.x + rotateCenter_.x,
+				bodyPosRect_.y + rotateCenter_.y,
+				gunRotateDegree_);
+			bulletList->push_back(bullet);
+		}
+		break;
+	}
+
+	shootSound_.Play();
 }

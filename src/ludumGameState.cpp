@@ -7,6 +7,7 @@
 #include "ludumGameState.h"
 
 LudumGameState::LudumGameState():
+	loseLiftSound_("./game/sounds/loseLife.ogg"),
 	backgroundPic_("./game/images/backbround.png", Window::renderer())
 {
 	Json::Value root;
@@ -49,47 +50,74 @@ LudumGameState::~LudumGameState()
 void
 LudumGameState::eventHandler(const SDL_Event& event)
 {
-	switch (event.type) {
-	case SDL_QUIT:
-		setNext(GAME_STATE_QUIT);
+	switch (gameStage_) {
+	case GAME_TITLE:
+		title_.eventHandler(event);
 		break;
-	case SDL_MOUSEBUTTONDOWN:
-		if (event.button.button == SDL_BUTTON_MIDDLE) {
-			cout << "x, y: " << event.button.x << ":"
-				<< event.button.y << endl;
+
+	case GAME_MAIN:
+		switch (event.type) {
+		case SDL_QUIT:
+			setNext(GAME_STATE_QUIT);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_MIDDLE) {
+				cout << "x, y: " << event.button.x << ":"
+					<< event.button.y << endl;
+			}
+			if (event.button.button == SDL_BUTTON_RIGHT)
+				addNewSpaceShip_();
+			break;
+		case SDL_MOUSEMOTION:
+			mousePosX_ = event.motion.x;
+			mousePosY_ = event.motion.y;
+			break;
 		}
-		if (event.button.button == SDL_BUTTON_RIGHT)
-			addNewSpaceShip_();
+
+		for (auto e : turrentList_)
+			e->eventHandler(event);
+
+		for (auto e : spaceShipList_)
+			e->eventHandler(event);
 		break;
-	case SDL_MOUSEMOTION:
-		mousePosX_ = event.motion.x;
-		mousePosY_ = event.motion.y;
+
+	case GAME_OVER:
 		break;
 	}
 
-	for (auto e : turrentList_)
-		e->eventHandler(event);
-
-	for (auto e : spaceShipList_)
-		e->eventHandler(event);
 }
 
 void
 LudumGameState::update()
 {
-	for (auto e : turrentList_)
-		e->update(mousePosX_, mousePosY_, &bulletList_);
+	switch (gameStage_) {
+	case GAME_TITLE:
+		if (title_.update())
+			gameStage_ = GAME_MAIN;
+		break;
 
-	updaetBullets_();
-	updateSpaceShips_();
+	case GAME_MAIN:
+		for (auto e : turrentList_)
+			e->update(mousePosX_, mousePosY_, &bulletList_);
 
-	for (auto bullet : bulletList_) {
-		for (auto ship : spaceShipList_) {
-			if (SDL_HasIntersection(ship->rect(), bullet->rect())) {
-				ship->suicide();
-				bullet->suicide();
+		updaetBullets_();
+		updateSpaceShips_();
+
+		for (auto bullet : bulletList_) {
+			for (auto ship : spaceShipList_) {
+				if (SDL_HasIntersection(ship->rect(),
+							bullet->rect())) {
+					ship->gotHit();
+					bullet->suicide();
+				}
 			}
 		}
+
+		hpBar_.update();
+		break;
+
+	case GAME_OVER:
+		break;
 	}
 }
 
@@ -98,14 +126,26 @@ LudumGameState::render()
 {
 	backgroundPic_.renderFullWindow();
 
-	for (auto e : bulletList_)
-		e->render();
+	switch (gameStage_) {
+	case GAME_TITLE:
+		title_.render();
 
-	for (auto e : turrentList_)
-		e->render();
+	case GAME_MAIN:
+		for (auto e : bulletList_)
+			e->render();
 
-	for (auto e : spaceShipList_)
-		e->render();
+		for (auto e : turrentList_)
+			e->render();
+
+		for (auto e : spaceShipList_)
+			e->render();
+
+		hpBar_.render();
+		break;
+
+	case GAME_OVER:
+		break;
+	}
 }
 
 void
@@ -113,11 +153,21 @@ LudumGameState::addNewSpaceShip_()
 {
 	SpaceShipBase* ship;
 	int startX, startY;
+	int which;
 
 	startX = 20;
-	startY = rand() % Window::height();
+	startY = rand() % Window::rect()->h;
 
-	ship = (SpaceShipBase*) new NormalSpaceShip(startX, startY);
+	which  = rand() % 2;
+	switch (which) {
+	case 0:
+		ship = new NormalSpaceShip(startX, startY);
+		break;
+	case 1:
+		ship = new SmallSpaceShip(startX, startY);
+		break;
+	}
+
 
 	spaceShipList_.push_back(ship);
 }
@@ -131,19 +181,19 @@ LudumGameState::updateSpaceShips_()
 
 		(*ship)->update();
 
+		if ((*ship)->rect()->x > Window::rect()->w) {
+			(*ship)->suicide();
+			hpBar_.removeLife();
+			loseLiftSound_.Play();
+		}
+
 		if ((*ship)->isDead()) {
 			delete (*ship);
 			spaceShipList_.erase(std::next(ship).base());
 		}
 	}
-}
 
-bool
-LudumGameState::checkCallision_(SpaceShipBase* ship, Bullet* bullet)
-{
-	return SDL_HasIntersection(ship->rect(), bullet->rect());
 }
-
 
 void
 LudumGameState::updaetBullets_()
@@ -159,4 +209,10 @@ LudumGameState::updaetBullets_()
 			bulletList_.erase(std::next(bullet).base());
 		}
 	}
+}
+
+bool
+LudumGameState::checkCallision_(SpaceShipBase* ship, Bullet* bullet)
+{
+	return SDL_HasIntersection(ship->rect(), bullet->rect());
 }

@@ -9,6 +9,8 @@
 SDL_Window* Window::window_ = nullptr;
 string Window::title_;
 
+SDL_Rect Window::rect_;
+
 SDL_Renderer* Window::renderer_ = nullptr;
 SDL_Color Window::clearColor_ = {31, 31, 31, 255};
 
@@ -47,6 +49,11 @@ Window::init(const char* title, Uint32 width, Uint32 height)
 
 	/* Make fullscreen fit physical screen */
 	SDL_RenderSetLogicalSize(renderer_, width, height);
+
+	rect_.x = 0;
+	rect_.y = 0;
+
+	SDL_RenderGetLogicalSize(renderer_, &rect_.w, &rect_.h);
 }
 
 void
@@ -165,17 +172,12 @@ Window::height()
 	return hToReturn;
 }
 
-SDL_Rect
+const SDL_Rect*
 Window::rect()
 {
-	SDL_Rect rectToReturn;
+	SDL_RenderGetLogicalSize(renderer_, &rect_.w, &rect_.h);
 
-	rectToReturn.x = 0;
-	rectToReturn.y = 0;
-
-	SDL_RenderGetLogicalSize(renderer_, &rectToReturn.w, &rectToReturn.h);
-
-	return rectToReturn;
+	return &rect_;
 }
 
 bool

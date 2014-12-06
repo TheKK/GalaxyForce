@@ -9,6 +9,18 @@
 int SpaceShipBase::count_ = 0;
 
 void
+SpaceShipBase::gotHit()
+{
+	isHitten_ = true;
+}
+
+bool
+SpaceShipBase::isHit() const
+{
+	return isHitten_;
+}
+
+void
 SpaceShipBase::suicide()
 {
 	isDead_ = true;
