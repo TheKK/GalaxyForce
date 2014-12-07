@@ -21,8 +21,7 @@ enum ShipState {
 class SpaceShipBase
 {
 public:
-	SpaceShipBase()	{ std::cout << ++count_<< "\n";	};
-	virtual ~SpaceShipBase() { std::cout << --count_<< "\n"; };
+	virtual ~SpaceShipBase() {}
 
 	virtual void eventHandler(const SDL_Event& event) = 0;
 	virtual void update() = 0;
@@ -35,11 +34,11 @@ public:
 	void suicide();
 	bool isDead() const;
 protected:
+	SpaceShipBase()	{};
+
 	enum ShipState shipState_ = STATE_NORMAL;
 
 	int hp_;
-private:
-	static int count_;
 };
 
 #endif /* SPACE_SHIP_BASE_H */

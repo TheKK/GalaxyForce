@@ -6,8 +6,6 @@
 
 #include "spaceShipBase.h"
 
-int SpaceShipBase::count_ = 0;
-
 void
 SpaceShipBase::gotHit()
 {

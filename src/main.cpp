@@ -6,9 +6,8 @@
 
 #include <stdexcept>
 #include <string>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 #include "gameState.h"
 #include "logLocator.h"
@@ -52,13 +51,6 @@ void PrintVersionInfo()
 		IMG_Linked_Version()->minor,
 		IMG_Linked_Version()->patch
 	);
-
-	LogLocator::GetService()->LogInfo(
-		"SDL_ttf linked version %d.%d.%d.\n",
-		TTF_Linked_Version()->major,
-		TTF_Linked_Version()->minor,
-		TTF_Linked_Version()->patch
-	);
 }
 
 void
@@ -74,12 +66,6 @@ InitSystem()
 	if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) < 0) {
 		string errMsg("Error while initialize SDL2_image: ");
 		errMsg += IMG_GetError();
-		throw runtime_error(errMsg);
-	}
-
-	if (TTF_Init() < 0) {
-		string errMsg("Error while initialize SDL2_ttf: ");
-		errMsg += TTF_GetError();
 		throw runtime_error(errMsg);
 	}
 
@@ -115,7 +101,6 @@ CleanUp()
 
 	SDL_Quit();
 	IMG_Quit();
-	TTF_Quit();
 }
 
 void
