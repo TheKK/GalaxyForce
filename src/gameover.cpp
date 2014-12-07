@@ -1,40 +1,33 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: title.cpp
+ * File: gameover.cpp
  */
 
-#include "title.h"
+#include "gameover.h"
 
-Title::Title():
-	titlePic_("./game/images/title.png", Window::renderer())
+GameOver::GameOver():
+	titlePic_("./game/images/gameOver.png", Window::renderer())
 {
 	titlePosRect_.x = 140;
 	titlePosRect_.y = 100;
 	titlePosRect_.w = 340;
 	titlePosRect_.h = 210;
+
+	titlePic_.setAlpha(0);
 }
 
-Title::~Title()
+GameOver::~GameOver()
 {
 }
 
 void
-Title::eventHandler(const SDL_Event& event)
+GameOver::eventHandler(const SDL_Event& event)
 {
-	if (isFadeIn_)
-		return;
-
-	switch (event.type) {
-	case SDL_KEYDOWN:
-	case SDL_MOUSEBUTTONDOWN:
-		isFadeOut_ = true;
-		break;
-	}
 }
 
 int
-Title::update()
+GameOver::update()
 {
 	if (isFadeIn_) {
 		titleTrans_ += 2;
@@ -42,6 +35,7 @@ Title::update()
 		if (titleTrans_ > 255) {
 			titleTrans_ = 255;
 			isFadeIn_ = false;
+			isFadeOut_ = true;
 		}
 
 	}
@@ -61,13 +55,13 @@ Title::update()
 }
 
 void
-Title::render()
+GameOver::render()
 {
 	titlePic_.render(titlePosRect_);
 }
 
 void
-Title::reset()
+GameOver::reset()
 {
 	isFadeOut_ = false;
 	isFadeIn_ = true;

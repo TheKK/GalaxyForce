@@ -20,6 +20,8 @@ SmallSpaceShip::SmallSpaceShip(int startX, int startY):
 	posRect_.w = 20;
 	posRect_.h = 20;
 
+	hp_ = 2;
+
 	if (!boomSound_.hasLoaded())
 		boomSound_.LoadSoundFile(
 			"./game/sounds/smallSpaceShipBoom.ogg");
@@ -40,7 +42,22 @@ SmallSpaceShip::eventHandler(const SDL_Event& event)
 void
 SmallSpaceShip::update()
 {
-	if (isHit()) {
+	switch (shipState_) {
+	case STATE_NORMAL:
+		if (shipSpriteDelay_++ == 3) {
+			shipSprite_.nextFrame();
+			shipSpriteDelay_ = 0;
+		}
+
+		if (moveDelay_++ == 1) {
+			posRect_.x += 3;
+			posRect_.y += 8 * std::sin(degree_);
+			degree_ += 0.1;
+			moveDelay_ = 0;
+		}
+		break;
+
+	case STATE_BOOM:
 		if (!Sound::isPlaying(source_))
 			alSourcePlay(source_);
 
@@ -49,26 +66,27 @@ SmallSpaceShip::update()
 				suicide();
 			boomSpriteDelay_ = 0;
 		}
-	} else {
-		if (shipSpriteDelay_++ == 3) {
-			shipSprite_.nextFrame();
-			shipSpriteDelay_ = 0;
-		}
+		break;
 
-		if (moveDelay_++ == 1) {
-			posRect_.x += 5;
-			moveDelay_ = 0;
-		}
+	case STATE_DEAD:
+		break;
 	}
 }
 
 void
 SmallSpaceShip::render()
 {
-	if (isHit()) {
-		boomSprite_.render(posRect_);
-	} else {
+	switch (shipState_) {
+	case STATE_NORMAL:
 		shipSprite_.render(posRect_);
+		break;
+
+	case STATE_BOOM:
+		boomSprite_.render(posRect_);
+		break;
+
+	case STATE_DEAD:
+		break;
 	}
 }
 

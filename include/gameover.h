@@ -1,22 +1,22 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: title.h
+ * File: gameover.h
  */
 
-#ifndef TITLE_H
-#define TITLE_H
+#ifndef GAME_OVER_H
+#define GAME_OVER_H
 
 #include <SDL.h>
 
 #include "window.h"
 #include "texture.h"
 
-class Title
+class GameOver
 {
 public:
-	Title();
-	~Title();
+	GameOver();
+	~GameOver();
 
 	void eventHandler(const SDL_Event& event);
 	int update();
@@ -33,4 +33,4 @@ private:
 	bool isFadeOut_ = false;
 };
 
-#endif /* TITLE_H */
+#endif /* GAME_OVER_H */

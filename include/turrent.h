@@ -35,16 +35,15 @@ public:
 
 	void setPos(int x, int y);
 	void setRotateDegree(double degree);
+	void shootBullet_(vector<Bullet*>* bulletList_);
 private:
 	Texture bodyPic_;
 	Texture gunPic_;
-	Texture cautionPic_;
 
 	static Sound shootSound_;
 
-	enum BulletType bulletType_ = BULLET_LASER;
+	enum BulletType bulletType_ = BULLET_NORMAL;
 
-	bool isOnEdge_ = false;
 	bool readyToShootBullet_ = false;
 
 	SDL_Rect bodyPosRect_ = {0};
@@ -58,7 +57,6 @@ private:
 	int reloadDelay_ = 0;
 
 	void normalizeDegree_(double* n);
-	void shootBullet_(vector<Bullet*>* bulletList_);
 };
 
 #endif /* TURRENT_H */

@@ -23,8 +23,8 @@ public:
 
 	void removeLife();
 	void addLife();
-
 	void resetLife();
+	int getLift() const;
 private:
 	Texture hpBar_;
 	Texture life0_;

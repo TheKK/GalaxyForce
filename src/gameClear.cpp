@@ -1,13 +1,13 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: title.cpp
+ * File: gameClear.cpp
  */
 
-#include "title.h"
+#include "gameClear.h"
 
-Title::Title():
-	titlePic_("./game/images/title.png", Window::renderer())
+GameClear::GameClear():
+	titlePic_("./game/images/gameClear.png", Window::renderer())
 {
 	titlePosRect_.x = 140;
 	titlePosRect_.y = 100;
@@ -15,12 +15,12 @@ Title::Title():
 	titlePosRect_.h = 210;
 }
 
-Title::~Title()
+GameClear::~GameClear()
 {
 }
 
 void
-Title::eventHandler(const SDL_Event& event)
+GameClear::eventHandler(const SDL_Event& event)
 {
 	if (isFadeIn_)
 		return;
@@ -34,7 +34,7 @@ Title::eventHandler(const SDL_Event& event)
 }
 
 int
-Title::update()
+GameClear::update()
 {
 	if (isFadeIn_) {
 		titleTrans_ += 2;
@@ -61,13 +61,13 @@ Title::update()
 }
 
 void
-Title::render()
+GameClear::render()
 {
 	titlePic_.render(titlePosRect_);
 }
 
 void
-Title::reset()
+GameClear::reset()
 {
 	isFadeOut_ = false;
 	isFadeIn_ = true;

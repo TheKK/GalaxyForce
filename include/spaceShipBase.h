@@ -12,6 +12,12 @@
 
 #include "sound.h"
 
+enum ShipState {
+	STATE_NORMAL,
+	STATE_BOOM,
+	STATE_DEAD
+};
+
 class SpaceShipBase
 {
 public:
@@ -24,15 +30,15 @@ public:
 
 	virtual const SDL_Rect* rect() const = 0;
 
-	void gotHit();
-	bool isHit() const;
+	virtual void gotHit();
 
 	void suicide();
 	bool isDead() const;
-private:
-	bool isHitten_ = false;
-	bool isDead_ = false;
+protected:
+	enum ShipState shipState_ = STATE_NORMAL;
 
+	int hp_;
+private:
 	static int count_;
 };
 

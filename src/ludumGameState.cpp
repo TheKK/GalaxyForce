@@ -8,7 +8,8 @@
 
 LudumGameState::LudumGameState():
 	loseLiftSound_("./game/sounds/loseLife.ogg"),
-	backgroundPic_("./game/images/backbround.png", Window::renderer())
+	backgroundPic_("./game/images/background.png", Window::renderer()),
+	backgroundPic2_("./game/images/background2.png", Window::renderer())
 {
 	Json::Value root;
 	Json::Reader reader;
@@ -50,6 +51,9 @@ LudumGameState::~LudumGameState()
 void
 LudumGameState::eventHandler(const SDL_Event& event)
 {
+	if (event.type == SDL_QUIT)
+		setNext(GAME_STATE_QUIT);
+
 	switch (gameStage_) {
 	case GAME_TITLE:
 		title_.eventHandler(event);
@@ -57,21 +61,15 @@ LudumGameState::eventHandler(const SDL_Event& event)
 
 	case GAME_MAIN:
 		switch (event.type) {
-		case SDL_QUIT:
-			setNext(GAME_STATE_QUIT);
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			if (event.button.button == SDL_BUTTON_MIDDLE) {
-				cout << "x, y: " << event.button.x << ":"
-					<< event.button.y << endl;
-			}
-			if (event.button.button == SDL_BUTTON_RIGHT)
-				addNewSpaceShip_();
-			break;
 		case SDL_MOUSEMOTION:
 			mousePosX_ = event.motion.x;
 			mousePosY_ = event.motion.y;
 			break;
+		case SDL_KEYDOWN:
+			if (event.key.keysym.scancode == SDL_SCANCODE_F)
+				if (event.key.state == SDL_PRESSED)
+					for (auto e : turrentList_)
+						e->shootBullet_(&bulletList_);
 		}
 
 		for (auto e : turrentList_)
@@ -82,6 +80,10 @@ LudumGameState::eventHandler(const SDL_Event& event)
 		break;
 
 	case GAME_OVER:
+		gameOver_.eventHandler(event);
+		break;
+	case GAME_CLEAR:
+		gameClear_.eventHandler(event);
 		break;
 	}
 
@@ -90,6 +92,9 @@ LudumGameState::eventHandler(const SDL_Event& event)
 void
 LudumGameState::update()
 {
+	for (auto e : turrentList_)
+		e->update(mousePosX_, mousePosY_, &bulletList_);
+
 	switch (gameStage_) {
 	case GAME_TITLE:
 		if (title_.update())
@@ -97,8 +102,6 @@ LudumGameState::update()
 		break;
 
 	case GAME_MAIN:
-		for (auto e : turrentList_)
-			e->update(mousePosX_, mousePosY_, &bulletList_);
 
 		updaetBullets_();
 		updateSpaceShips_();
@@ -113,10 +116,31 @@ LudumGameState::update()
 			}
 		}
 
+		if (spanDelay_++ == 30) {
+			addNewSpaceShip_();
+			spanDelay_ = 0;
+		}
+
 		hpBar_.update();
+		if (hpBar_.getLift() == 0)
+			gameStage_ = GAME_OVER;
+
+		if (shipDestroyCount_ == 70)
+			gameStage_ = GAME_CLEAR;
 		break;
 
 	case GAME_OVER:
+		if (gameOver_.update()) {
+			resetEntireGame_();
+			gameStage_ = GAME_TITLE;
+		}
+		break;
+
+	case GAME_CLEAR:
+		if (gameClear_.update()) {
+			resetEntireGame_();
+			gameStage_ = GAME_TITLE;
+		}
 		break;
 	}
 }
@@ -126,26 +150,33 @@ LudumGameState::render()
 {
 	backgroundPic_.renderFullWindow();
 
+	for (auto e : bulletList_)
+		e->render();
+
+	for (auto e : turrentList_)
+		e->render();
+
+	for (auto e : spaceShipList_)
+		e->render();
+
 	switch (gameStage_) {
 	case GAME_TITLE:
 		title_.render();
 
 	case GAME_MAIN:
-		for (auto e : bulletList_)
-			e->render();
-
-		for (auto e : turrentList_)
-			e->render();
-
-		for (auto e : spaceShipList_)
-			e->render();
-
 		hpBar_.render();
 		break;
 
 	case GAME_OVER:
+		gameOver_.render();
+		break;
+
+	case GAME_CLEAR:
+		gameClear_.render();
 		break;
 	}
+
+	backgroundPic2_.renderFullWindow();
 }
 
 void
@@ -153,21 +184,32 @@ LudumGameState::addNewSpaceShip_()
 {
 	SpaceShipBase* ship;
 	int startX, startY;
-	int which;
+	int which = 0;
 
-	startX = 20;
-	startY = rand() % Window::rect()->h;
+	if (shipDestroyCount_ < 10)
+		which  = 0;
+	else if (shipDestroyCount_ < 30)
+		which  = rand() % 2;
+	else if (shipDestroyCount_ > 40)
+		which  = rand() % 3;
 
-	which  = rand() % 2;
 	switch (which) {
 	case 0:
+		startX = -20;
+		startY = 60 + rand() % (240 - 20);
 		ship = new NormalSpaceShip(startX, startY);
 		break;
 	case 1:
+		startX = -10;
+		startY = 60 + rand() % (240 - 20);
 		ship = new SmallSpaceShip(startX, startY);
 		break;
+	case 2:
+		startX = -100;
+		startY = 60 + rand() % (240 - 150);
+		ship = new BossSpaceShip(startX, startY);
+		break;
 	}
-
 
 	spaceShipList_.push_back(ship);
 }
@@ -190,6 +232,7 @@ LudumGameState::updateSpaceShips_()
 		if ((*ship)->isDead()) {
 			delete (*ship);
 			spaceShipList_.erase(std::next(ship).base());
+			shipDestroyCount_++;
 		}
 	}
 
@@ -215,4 +258,27 @@ bool
 LudumGameState::checkCallision_(SpaceShipBase* ship, Bullet* bullet)
 {
 	return SDL_HasIntersection(ship->rect(), bullet->rect());
+}
+
+void
+LudumGameState::resetEntireGame_()
+{
+	for (auto e : spaceShipList_) {
+		delete e;
+		e = nullptr;
+	}
+	spaceShipList_.clear();
+
+	for (auto e : bulletList_) {
+		delete e;
+		e = nullptr;
+	}
+	bulletList_.clear();
+
+	title_.reset();
+	gameOver_.reset();
+	gameClear_.reset();
+	hpBar_.resetLife();
+
+	shipDestroyCount_ = 0;
 }

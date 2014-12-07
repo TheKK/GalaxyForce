@@ -11,23 +11,19 @@ int SpaceShipBase::count_ = 0;
 void
 SpaceShipBase::gotHit()
 {
-	isHitten_ = true;
-}
-
-bool
-SpaceShipBase::isHit() const
-{
-	return isHitten_;
+	hp_--;
+	if (hp_ == 0)
+		shipState_ = STATE_BOOM;
 }
 
 void
 SpaceShipBase::suicide()
 {
-	isDead_ = true;
+	shipState_ = STATE_DEAD;
 }
 
 bool
 SpaceShipBase::isDead() const
 {
-	return isDead_;
+	return (shipState_ == STATE_DEAD);
 }

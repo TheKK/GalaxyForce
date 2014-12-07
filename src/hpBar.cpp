@@ -63,3 +63,9 @@ HPBar::resetLife()
 {
 	hp_ = 3;
 }
+
+int
+HPBar::getLift() const
+{
+	return hp_;
+}

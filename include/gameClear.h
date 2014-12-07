@@ -1,22 +1,22 @@
 /*
  * Author: KK <thumbd03803@gmail.com>
  *
- * File: title.h
+ * File: gameClear.h
  */
 
-#ifndef TITLE_H
-#define TITLE_H
+#ifndef GAME_CLEAR_H
+#define GAME_CLEAR_H
 
 #include <SDL.h>
 
 #include "window.h"
 #include "texture.h"
 
-class Title
+class GameClear
 {
 public:
-	Title();
-	~Title();
+	GameClear();
+	~GameClear();
 
 	void eventHandler(const SDL_Event& event);
 	int update();
@@ -33,4 +33,4 @@ private:
 	bool isFadeOut_ = false;
 };
 
-#endif /* TITLE_H */
+#endif /* GAME_CLEAR_H */

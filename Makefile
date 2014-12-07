@@ -6,6 +6,7 @@
 
 CXX := g++
 CXXFLAG = -Wall -std=c++11 -g
+#CXXFLAG = -Wall -std=c++11 -g -L/usr/lib32 -m32
 
 SRC_DIR = $(PWD)/src
 SRC = $(wildcard $(addsuffix /*.cpp, $(SRC_DIR)))

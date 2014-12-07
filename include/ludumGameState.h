@@ -17,15 +17,19 @@
 #include "turrent.h"
 #include "normalSpaceShip.h"
 #include "smallSpaceShip.h"
+#include "bossSpaceShip.h"
 #include "hpBar.h"
 #include "sound.h"
 #include "window.h"
 #include "title.h"
+#include "gameover.h"
+#include "gameClear.h"
 
 enum GameStage {
 	GAME_TITLE = 0x00,
 	GAME_MAIN,
-	GAME_OVER
+	GAME_OVER,
+	GAME_CLEAR
 };
 
 class LudumGameState : public GameState
@@ -56,8 +60,15 @@ private:
 	Sound loseLiftSound_;
 
 	Title title_;
+	GameOver gameOver_;
+	GameClear gameClear_;
 
 	Texture backgroundPic_;
+	Texture backgroundPic2_;
+
+	int spanDelay_ = 0;
+
+	int shipDestroyCount_ = 0;
 
 	int mousePosX_;
 	int mousePosY_;
@@ -68,6 +79,8 @@ private:
 	void updaetBullets_();
 
 	bool checkCallision_(SpaceShipBase* ship, Bullet* bullet);
+
+	void resetEntireGame_();
 };
 
 #endif /* LUDUM_GAME_STATE_H */

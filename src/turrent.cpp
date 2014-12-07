@@ -10,8 +10,7 @@ Sound Turrent::shootSound_;
 
 Turrent::Turrent():
 	bodyPic_("game/images/turrent_body.png", Window::renderer()),
-	gunPic_("game/images/turrent_gun.png", Window::renderer()),
-	cautionPic_("./game/images/turrent_edgeCaution.png", Window::renderer())
+	gunPic_("game/images/turrent_gun.png", Window::renderer())
 {
 	bodyPosRect_.x = 0;
 	bodyPosRect_.y = 0;
@@ -67,15 +66,10 @@ Turrent::update(int mousePosX, int mousePosY, vector<Bullet*>* bulletList_)
 
 	normalizeDegree_(&gunRotateDegree_);
 
-	if (gunRotateDegree_ > rotateEdgeRight) {
+	if (gunRotateDegree_ > rotateEdgeRight)
 		gunRotateDegree_ = rotateEdgeRight;
-		isOnEdge_ = true;
-	} else if (gunRotateDegree_ <  rotateEdgeLeft) {
+	else if (gunRotateDegree_ <  rotateEdgeLeft)
 		gunRotateDegree_ = rotateEdgeLeft;
-		isOnEdge_ = true;
-	} else {
-		isOnEdge_ = false;
-	}
 
 	normalizeDegree_(&gunRotateDegree_);
 
@@ -87,7 +81,7 @@ Turrent::update(int mousePosX, int mousePosY, vector<Bullet*>* bulletList_)
 	if (readyToShootBullet_) {
 		shootBullet_(bulletList_);
 		readyToShootBullet_ = false;
-		reloadDelay_ = 50;
+		reloadDelay_ = 10;
 	}
 }
 
@@ -96,9 +90,6 @@ Turrent::render()
 {
 	gunPic_.renderEx(bodyPosRect_, &rotateCenter_);
 	bodyPic_.renderEx(bodyPosRect_, &rotateCenter_);
-
-	if (isOnEdge_)
-		cautionPic_.render(bodyPosRect_);
 }
 
 void
